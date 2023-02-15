@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Flow xmlns="http://soap.sforce.com/2006/04/metadata">
+    <actionCalls>
+        <description>Sends message to channel about new knowledge alert</description>
+        <name>Slack_Knowledge_Alert</name>
+        <label>Slack Knowledge Alert</label>
+        <locationX>308</locationX>
+        <locationY>288</locationY>
+        <actionName>slackPostMessage</actionName>
+        <actionType>slackPostMessage</actionType>
+        <flowTransactionModel>CurrentTransaction</flowTransactionModel>
+        <inputParameters>
+            <name>slackAppIdForToken</name>
+            <value>
+                <stringValue>A01RDL2NJAH</stringValue>
+            </value>
+        </inputParameters>
+        <inputParameters>
+            <name>slackConversationId</name>
+            <value>
+                <elementReference>SlackChannelID</elementReference>
+            </value>
+        </inputParameters>
+        <inputParameters>
+            <name>slackMessage</name>
+            <value>
+                <elementReference>ttBody</elementReference>
+            </value>
+        </inputParameters>
+        <inputParameters>
+            <name>slackWorkspaceIdForToken</name>
+            <value>
+                <stringValue>T04J3AD51C3</stringValue>
+            </value>
+        </inputParameters>
+        <storeOutputAutomatically>true</storeOutputAutomatically>
+    </actionCalls>
+    <apiVersion>57.0</apiVersion>
+    <constants>
+        <description>ID of the channel recipient</description>
+        <name>SlackChannelID</name>
+        <dataType>String</dataType>
+        <value>
+            <stringValue>C04PSCKDUE6</stringValue>
+        </value>
+    </constants>
+    <description>Sends a message into slack about a knowledge article being created from slack.</description>
+    <environments>Default</environments>
+    <formulas>
+        <name>fAbsoluteURL</name>
+        <dataType>String</dataType>
+        <expression>SUBSTITUTE(LEFT($Api.Partner_Server_URL_560, FIND( &apos;/services&apos;, $Api.Partner_Server_URL_560)),&quot;.my.salesforce&quot;,&quot;.lightning.force&quot;)&amp;&quot;lightning/r/Knowledge__kav/&quot; &amp; {!$Record.Id} &amp;&quot;/view&quot;</expression>
+    </formulas>
+    <formulas>
+        <description>I hacked this based off google. sorry if it doesnt work.</description>
+        <name>fSlackURL</name>
+        <dataType>String</dataType>
+        <expression>RIGHT({!$Record.Slack_Metadata__c},Find(&quot;URL: &quot;, {!$Record.Slack_Metadata__c})-23)</expression>
+    </formulas>
+    <interviewLabel>Knowledge Alert to Slack {!$Flow.CurrentDateTime}</interviewLabel>
+    <label>Knowledge Alert to Slack</label>
+    <processMetadataValues>
+        <name>BuilderType</name>
+        <value>
+            <stringValue>LightningFlowBuilder</stringValue>
+        </value>
+    </processMetadataValues>
+    <processMetadataValues>
+        <name>CanvasMode</name>
+        <value>
+            <stringValue>AUTO_LAYOUT_CANVAS</stringValue>
+        </value>
+    </processMetadataValues>
+    <processMetadataValues>
+        <name>OriginBuilderType</name>
+        <value>
+            <stringValue>LightningFlowBuilder</stringValue>
+        </value>
+    </processMetadataValues>
+    <processType>AutoLaunchedFlow</processType>
+    <start>
+        <locationX>50</locationX>
+        <locationY>0</locationY>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>Slack_Metadata__c</field>
+            <operator>IsNull</operator>
+            <value>
+                <booleanValue>false</booleanValue>
+            </value>
+        </filters>
+        <object>Knowledge__kav</object>
+        <recordTriggerType>Create</recordTriggerType>
+        <scheduledPaths>
+            <connector>
+                <targetReference>Slack_Knowledge_Alert</targetReference>
+            </connector>
+            <pathType>AsyncAfterCommit</pathType>
+        </scheduledPaths>
+        <triggerType>RecordAfterSave</triggerType>
+    </start>
+    <status>Draft</status>
+    <textTemplates>
+        <description>Message sent into slack</description>
+        <name>ttBody</name>
+        <isViewedAsPlainText>true</isViewedAsPlainText>
+        <text>*A new knowledge article has been submitted for your review!*
+
+*Title:* {!$Record.Title}
+&gt; :speech_balloon: &lt;{!fSlackURL}|View Message In Slack&gt;
+&gt; :cloud: &lt;{!fAbsoluteURL}|View Draft In Slack&gt;</text>
+    </textTemplates>
+</Flow>
