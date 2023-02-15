@@ -55,7 +55,9 @@
         <description>I hacked this based off google. sorry if it doesnt work.</description>
         <name>fSlackURL</name>
         <dataType>String</dataType>
-        <expression>RIGHT({!$Record.Slack_Metadata__c},Find(&quot;URL: &quot;, {!$Record.Slack_Metadata__c})-23)</expression>
+        <expression>&quot;https:/&quot;&amp;RIGHT(
+{!$Record.Slack_Metadata__c}, LEN({!$Record.Slack_Metadata__c}) - FIND(&quot;/&quot;, {!$Record.Slack_Metadata__c})
+)</expression>
     </formulas>
     <interviewLabel>Knowledge Alert to Slack {!$Flow.CurrentDateTime}</interviewLabel>
     <label>Knowledge Alert to Slack</label>
@@ -99,7 +101,7 @@
         </scheduledPaths>
         <triggerType>RecordAfterSave</triggerType>
     </start>
-    <status>Draft</status>
+    <status>Obsolete</status>
     <textTemplates>
         <description>Message sent into slack</description>
         <name>ttBody</name>
