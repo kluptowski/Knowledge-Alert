@@ -110,6 +110,6 @@
 
 *Title:* {!$Record.Title}
 &gt; :speech_balloon: &lt;{!fSlackURL}|View Message In Slack&gt;
-&gt; :cloud: &lt;{!fAbsoluteURL}|View Draft In Slack&gt;</text>
+&gt; :cloud: &lt;{!fAbsoluteURL}|View Draft In Salesforce&gt;</text>
     </textTemplates>
 </Flow>
